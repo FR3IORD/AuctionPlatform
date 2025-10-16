@@ -1,0 +1,32 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /auction-platform/
+    
+    # Skip rewrite for real files and directories
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # API routing - forward all API requests to api/index.php
+    RewriteRule ^api/(.*)$ api/index.php [QSA,L]
+
+    # Prevent direct access to config and language files
+    RewriteRule ^config/ - [F]
+    RewriteRule ^lang/ - [F]
+    RewriteRule ^\.env$ - [F]
+    RewriteRule ^composer\.(json|lock)$ - [F]
+</IfModule>
+
+# Security headers
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "SAMEORIGIN"
+Header set X-XSS-Protection "1; mode=block"
+
+# Enable compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# CORS headers
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type, Authorization"
