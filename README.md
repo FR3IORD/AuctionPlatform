@@ -1,2 +1,0 @@
-# AuctionPlatform
-Auction_Platform
