@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: auction-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: auctionplatform
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  app:
+    build: .
+    container_name: auction-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/auctionplatform
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRE=7d
+      - PORT=3000
+    depends_on:
+      - mongodb
+    volumes:
+      - ./src:/usr/src/app/src
+
+volumes:
+  mongodb_data:
